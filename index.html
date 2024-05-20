@@ -8,5 +8,46 @@
 <body>
   <h1>URL Redirector by Damion Gans</h1>
   <p>Still needs some work :-)</p>
+  <form id="shortlinkForm">
+      <label for="keyword">Enter Shortlink Keyword:</label>
+      <input type="text" id="keyword" name="keyword" required>
+      <button type="submit">Go</button>
+    </form>
+    <p id="test">Enter a shortlink keyword and click "Go".</p>
+
+    <script>
+      document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form from submitting the traditional way
+        const keyword = document.getElementById('keyword').value.trim().toLowerCase();
+        const firstCharacter = keyword[0];
+
+        async function redirectToUrl() {
+          try {
+            const response = await fetch(`https://dam.gs/${firstCharacter}.txt`);
+            const data = await response.text();
+            const entries = data.split('\n');
+            let found = false;
+
+            for (let i = 0; i < entries.length; i++) {
+              const [entryKeyword, entryUrl] = entries[i].split(' ');
+              if (entryKeyword === keyword) {
+                window.location.href = entryUrl;
+                found = true;
+                break;
+              }
+            }
+
+            if (!found) {
+              document.getElementById('test').textContent = 'Could not find shortlink';
+            }
+          } catch (error) {
+            console.error('Error fetching or processing data:', error);
+            document.getElementById('test').textContent = 'Could not find shortlink';
+          }
+        }
+        
+        redirectToUrl();
+      });
+    </script>
 </body>
 </html>
