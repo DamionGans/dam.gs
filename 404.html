@@ -25,10 +25,10 @@
         }
       } catch (error) {
         console.error('Error fetching or processing data:', error);
-        document.getElementById('test').innerText = "404";
       }
     }
 
     redirectToUrl();
+    document.getElementById('test').innerHTML = "Could not find shortlink.";
   </script>
 </html>
