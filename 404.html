@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title></title>
+    <title>Redirecting...</title>
   </head>
   <body>
-    <p id="test"></p>
+    <p id="test">404</p>
   </body>
   <script>
-    document.getElementById("test").innerText = window.location.pathname.replace('/','');
+  const keyword = window.location.pathname.replace('/','').toLowerCase();
+  const firstCharacter = keyword[0];
+  let entries;
+  await fetch(`https://dam.gs/${firstCharacter}.txt`)
+    .then(response => response.text())
+    .then((data) => {
+      entries = data.split('\n');
+    })
+  for(let i= 0; i < entries.length; i++) {
+    if (entries[i].split(' ')[0] == keyword) {
+      window.location.href = entries[i].split(' ')[1];
+    } 
+  }
   </script>
 </html>
