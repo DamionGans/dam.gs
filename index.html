@@ -37,11 +37,11 @@
             }
 
             if (!found) {
-              document.getElementById('result').textContent = 'Could not find shortlink';
+              document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
             }
           } catch (error) {
             console.error('Error fetching or processing data:', error);
-            document.getElementById('result').textContent = 'Could not find shortlink';
+            document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
           }
         }
         
