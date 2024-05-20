@@ -26,10 +26,10 @@
             const data = await response.text();
             const entries = data.split('\n');
             let found = false;
-
             for (let i = 0; i < entries.length; i++) {
               const [entryKeyword, entryUrl] = entries[i].split(' ');
               if (entryKeyword === keyword) {
+                document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
                 window.location.href = entryUrl;
                 found = true;
                 break;

@@ -4,7 +4,8 @@
     <title>Redirecting...</title>
   </head>
   <body>
-    <p id="test">Redirecting...</p>
+    <h1>ShortLinker by Damion Gans</h1>
+    <p id="result">Looking up ShortLink...</p>
   </body>
   <script>
     const keyword = window.location.pathname.replace('/','').toLowerCase();
@@ -20,6 +21,7 @@
         for (let i = 0; i < entries.length; i++) {
           const [entryKeyword, entryUrl] = entries[i].split(' ');
           if (entryKeyword === keyword) {
+            document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
             window.location.href = entryUrl;
             found = true;
             break;
@@ -27,11 +29,11 @@
         }
 
         if (!found) {
-          document.getElementById('test').textContent = `Could not find ShortLink ${keyword}.`;
+          document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
         }
       } catch (error) {
         console.error('Error fetching or processing data:', error);
-        document.getElementById('test').textContent = `Could not find ShortLink ${keyword}.`;
+        document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
       }
     }
     redirectToUrl();
