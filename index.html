@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="description" content="URL Redirector by DamionGans">
+  <meta name="description" content="ShortLinker by DamionGans">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>URL Redirector by DamionGans</title>
+  <title>ShortLinker by DamionGans</title>
 </head>
 <body>
-  <h1>URL Redirector by Damion Gans</h1>
-  <p>Still needs some work :-)</p>
-  <form id="shortlinkForm">
-      <label for="keyword">Enter Shortlink Keyword:</label>
+  <h1>ShortLinker by Damion Gans</h1>
+    <form id="shortlinkForm">
+      <label for="keyword">Enter ShortLink keyword:</label>
       <input type="text" id="keyword" name="keyword" required>
       <button type="submit">Go</button>
     </form>
-    <p id="test">Enter a shortlink keyword and click "Go".</p>
+    <p id="result"></p>
 
     <script>
       document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
@@ -38,11 +37,11 @@
             }
 
             if (!found) {
-              document.getElementById('test').textContent = 'Could not find shortlink';
+              document.getElementById('result').textContent = 'Could not find shortlink';
             }
           } catch (error) {
             console.error('Error fetching or processing data:', error);
-            document.getElementById('test').textContent = 'Could not find shortlink';
+            document.getElementById('result').textContent = 'Could not find shortlink';
           }
         }
         
