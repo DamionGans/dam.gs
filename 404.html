@@ -7,18 +7,27 @@
     <p id="test">404</p>
   </body>
   <script>
-  const keyword = window.location.pathname.replace('/','').toLowerCase();
-  const firstCharacter = keyword[0];
-  let entries;
-  await fetch(`https://dam.gs/${firstCharacter}.txt`)
-    .then(response => response.text())
-    .then((data) => {
-      entries = data.split('\n');
-    })
-  for(let i= 0; i < entries.length; i++) {
-    if (entries[i].split(' ')[0] == keyword) {
-      window.location.href = entries[i].split(' ')[1];
-    } 
-  }
+    const keyword = window.location.pathname.replace('/','').toLowerCase();
+    const firstCharacter = keyword[0];
+
+    async function redirectToUrl() {
+      try {
+        const response = await fetch(`https://dam.gs/${firstCharacter}.txt`);
+        const data = await response.text();
+        const entries = data.split('\n');
+
+        for (let i = 0; i < entries.length; i++) {
+          const [entryKeyword, entryUrl] = entries[i].split(' ');
+          if (entryKeyword === keyword) {
+            window.location.href = entryUrl;
+            break;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching or processing data:', error);
+      }
+    }
+
+    redirectToUrl();
   </script>
 </html>
