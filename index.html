@@ -20,31 +20,30 @@
       document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent form from submitting the traditional way
         const keyword = document.getElementById('keyword').value.trim().toLowerCase();
-        const firstCharacter = keyword[0];
 
         async function redirectToUrl() {
-          try {
-            const response = await fetch(`https://dam.gs/${firstCharacter}.txt`);
-            const data = await response.text();
-            const entries = data.split('\n');
-            let found = false;
-            for (let i = 0; i < entries.length; i++) {
-              const [entryKeyword, entryUrl] = entries[i].split(' ');
-              if (entryKeyword === keyword) {
-                document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
-                window.location.href = entryUrl;
-                found = true;
-                break;
-              }
-            }
+            try {
+                const urlResponse = await fetch(`https://dam.gs/links/${keyword}.url`);
+                if (urlResponse.ok) {
+                    const urlText = await urlResponse.text();
+                    document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
+                    window.location.href = urlText.trim();
+                    return;
+                }
 
-            if (!found) {
-              document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
+                const mdResponse = await fetch(`https://dam.gs/links/${keyword}.md`);
+                if (mdResponse.ok) {
+                    const mdText = await mdResponse.text();
+                    document.getElementById('result').innerHTML = mdText;
+                    return;
+                }
+
+                document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
+
+            } catch (error) {
+                console.error('Error fetching or processing data:', error);
+                document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
             }
-          } catch (error) {
-            console.error('Error fetching or processing data:', error);
-            document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
-          }
         }
         
         redirectToUrl();
