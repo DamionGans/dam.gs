@@ -15,12 +15,12 @@
     async function redirectToUrl() {
       try {
         let urlText = null;
-        const urlResponse = await fetch(`/links/${keyword}.url`);
+        const urlResponse = await fetch(`links/${keyword}.url`);
         if (urlResponse.ok) {
           urlText = await urlResponse.text();
         }
 
-        const mdResponse = await fetch(`/links/${keyword}.md`);
+        const mdResponse = await fetch(`links/${keyword}.md`);
         if (mdResponse.ok) {
           const mdText = await mdResponse.text();
           document.getElementById('result').innerHTML = mdText;
