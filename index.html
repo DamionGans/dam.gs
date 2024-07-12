@@ -1,70 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta name="description" content="ShortLinker by DamionGans">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <title>ShortLinker by DamionGans</title>
+  <title>Redirecting...</title>
 </head>
 <body>
   <div class="container mt-5">
     <h1>ShortLinker by Damion Gans</h1>
-    <form id="shortlinkForm" class="mb-4">
-      <div class="mb-3">
-        <label for="keyword" class="form-label">Enter ShortLink keyword:</label>
-        <input type="text" id="keyword" name="keyword" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Go</button>
-    </form>
-    <div id="result"></div>
+    <p id="result">Looking up ShortLink...</p>
   </div>
-
   <script>
-    document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form from submitting the traditional way
-      const keyword = document.getElementById('keyword').value.trim().toLowerCase();
-
-      async function redirectToUrl() {
-        try {
-          let urlText = null;
-          const urlResponse = await fetch(`links/${keyword}.url`);
-          if (urlResponse.ok) {
-            urlText = await urlResponse.text();
-          }
-
-          const mdResponse = await fetch(`links/${keyword}.md`);
-          if (mdResponse.ok) {
-            const mdText = await mdResponse.text();
-            document.getElementById('result').innerHTML = marked.parse(mdText);
-            if (urlText) {
-              const button = document.createElement('button');
-              button.textContent = 'Continue to link';
-              button.classList.add('btn', 'btn-primary', 'mt-3');
-              button.onclick = function() {
-                window.location.href = urlText.trim();
-              };
-              document.getElementById('result').appendChild(button);
-            }
-            return;
-          }
-
-          if (urlText) {
-            document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
-            window.location.href = urlText.trim();
-            return;
-          }
-
-          document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
-
-        } catch (error) {
-          console.error('Error fetching or processing data:', error);
-          document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
+    const keyword = window.location.pathname.replace('/','').toLowerCase();
+    
+    async function redirectToUrl() {
+      try {
+        let urlText = null;
+        const urlResponse = await fetch(`links/${keyword}.url`);
+        if (urlResponse.ok) {
+          urlText = await urlResponse.text();
         }
+
+        const mdResponse = await fetch(`links/${keyword}.md`);
+        if (mdResponse.ok) {
+          const mdText = await mdResponse.text();
+          document.getElementById('result').innerHTML = marked(mdText);
+          if (urlText) {
+            const button = document.createElement('button');
+            button.textContent = 'Continue to link';
+            button.classList.add('btn', 'btn-primary', 'mt-3');
+            button.onclick = function() {
+              window.location.href = urlText.trim();
+            };
+            document.getElementById('result').appendChild(button);
+          }
+          return;
+        }
+
+        if (urlText) {
+          document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
+          window.location.href = urlText.trim();
+          return;
+        }
+
+        document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
+      } catch (error) {
+        console.error('Error fetching or processing data:', error);
+        document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
       }
-      
-      redirectToUrl();
-    });
+    }
+
+    redirectToUrl();
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
