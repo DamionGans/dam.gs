@@ -23,18 +23,31 @@
 
         async function redirectToUrl() {
             try {
-                const urlResponse = await fetch(`https://dam.gs/links/${keyword}.url`);
+                let urlText = null;
+                const urlResponse = await fetch(`/links/${keyword}.url`);
                 if (urlResponse.ok) {
-                    const urlText = await urlResponse.text();
-                    document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
-                    window.location.href = urlText.trim();
-                    return;
+                    urlText = await urlResponse.text();
                 }
 
-                const mdResponse = await fetch(`https://dam.gs/links/${keyword}.md`);
+                const mdResponse = await fetch(`/links/${keyword}.md`);
                 if (mdResponse.ok) {
                     const mdText = await mdResponse.text();
                     document.getElementById('result').innerHTML = mdText;
+                    if (urlText) {
+                        const button = document.createElement('button');
+                        button.textContent = 'Continue to link';
+                        button.classList.add('btn', 'btn-primary', 'mt-3');
+                        button.onclick = function() {
+                          window.location.href = urlText.trim();
+                        };
+                        document.getElementById('result').appendChild(button);
+                    }
+                    return;
+                }
+
+                if (urlText) {
+                    document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
+                    window.location.href = urlText.trim();
                     return;
                 }
 
