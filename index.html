@@ -22,52 +22,54 @@
   </div>
 
   <script>
-    async function redirectToUrl(keyword) {
-      try {
-        let urlText = null;
-        let mdText = null;
+    document.addEventListener('DOMContentLoaded', function() {
+      async function redirectToUrl(keyword) {
+        try {
+          let urlText = null;
+          let mdText = null;
 
-        const urlResponse = await fetch(`links/${keyword}.url`);
-        if (urlResponse.ok) {
-          urlText = await urlResponse.text();
-        }
+          const urlResponse = await fetch(`links/${keyword}.url`);
+          if (urlResponse.ok) {
+            urlText = await urlResponse.text();
+          }
 
-        const mdResponse = await fetch(`links/${keyword}.md`);
-        if (mdResponse.ok) {
-          mdText = await mdResponse.text();
-          document.getElementById('result').innerHTML = marked(mdText);
-        }
+          const mdResponse = await fetch(`links/${keyword}.md`);
+          if (mdResponse.ok) {
+            mdText = await mdResponse.text();
+            document.getElementById('result').innerHTML = marked(mdText);
+          }
 
-        if (mdText && urlText) {
-          const button = document.createElement('button');
-          button.textContent = 'Continue to link';
-          button.classList.add('btn', 'btn-primary', 'mt-3');
-          button.onclick = function() {
+          if (mdText && urlText) {
+            const button = document.createElement('button');
+            button.textContent = 'Continue to link';
+            button.classList.add('btn', 'btn-primary', 'mt-3');
+            button.onclick = function() {
+              window.location.href = urlText.trim();
+            };
+            document.getElementById('result').appendChild(button);
+          } else if (urlText) {
+            document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
             window.location.href = urlText.trim();
-          };
-          document.getElementById('result').appendChild(button);
-        } else if (urlText) {
-          document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
-          window.location.href = urlText.trim();
-        } else if (!mdText) {
+          } else if (!mdText) {
+            document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
+          }
+        } catch (error) {
+          console.error('Error fetching or processing data:', error);
           document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
         }
-      } catch (error) {
-        console.error('Error fetching or processing data:', error);
-        document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
-      }
-    }
-
-    document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
-      event.preventDefault(); // Prevent form from submitting the traditional way
-      const keyword = document.getElementById('keyword').value.trim().toLowerCase();
-
-      if (!keyword) {
-        document.getElementById('result').textContent = 'Please enter a ShortLink keyword.';
-        return;
       }
 
-      redirectToUrl(keyword);
+      document.getElementById('shortlinkForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form from submitting the traditional way
+        const keyword = document.getElementById('keyword').value.trim().toLowerCase();
+
+        if (!keyword) {
+          document.getElementById('result').textContent = 'Please enter a ShortLink keyword.';
+          return;
+        }
+
+        redirectToUrl(keyword);
+      });
     });
   </script>
 </body>
