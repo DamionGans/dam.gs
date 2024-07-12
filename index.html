@@ -18,6 +18,8 @@
     async function redirectToUrl() {
       try {
         let urlText = null;
+        let mdText = null;
+
         const urlResponse = await fetch(`links/${keyword}.url`);
         if (urlResponse.ok) {
           urlText = await urlResponse.text();
@@ -25,27 +27,24 @@
 
         const mdResponse = await fetch(`links/${keyword}.md`);
         if (mdResponse.ok) {
-          const mdText = await mdResponse.text();
+          mdText = await mdResponse.text();
           document.getElementById('result').innerHTML = marked(mdText);
-          if (urlText) {
-            const button = document.createElement('button');
-            button.textContent = 'Continue to link';
-            button.classList.add('btn', 'btn-primary', 'mt-3');
-            button.onclick = function() {
-              window.location.href = urlText.trim();
-            };
-            document.getElementById('result').appendChild(button);
-          }
-          return;
         }
 
-        if (urlText) {
+        if (mdText && urlText) {
+          const button = document.createElement('button');
+          button.textContent = 'Continue to link';
+          button.classList.add('btn', 'btn-primary', 'mt-3');
+          button.onclick = function() {
+            window.location.href = urlText.trim();
+          };
+          document.getElementById('result').appendChild(button);
+        } else if (urlText) {
           document.getElementById('result').textContent = `ShortLink ${keyword} found, redirecting...`;
           window.location.href = urlText.trim();
-          return;
+        } else if (!mdText) {
+          document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
         }
-
-        document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
       } catch (error) {
         console.error('Error fetching or processing data:', error);
         document.getElementById('result').textContent = `Could not find ShortLink ${keyword}.`;
